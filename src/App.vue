@@ -28,6 +28,12 @@ const isActive = (name: string) => route.name === name
       >
         🏗️ Architecture
       </button>
+      <button 
+        :class="['tab', { active: isActive('documents') }]"
+        @click="router.push('/documents')"
+      >
+        📚 Documents Q&A
+      </button>
     </nav>
 
     <div class="tab-content">
@@ -65,16 +71,17 @@ body {
 }
 
 .tab {
-  padding: 1rem 2rem;
+  padding: 1rem 1.5rem;
   background: none;
   border: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
   color: #6b7280;
   cursor: pointer;
   border-bottom: 3px solid transparent;
   transition: all 0.2s;
   margin-bottom: -2px;
+  white-space: nowrap;
 }
 
 .tab:hover {
