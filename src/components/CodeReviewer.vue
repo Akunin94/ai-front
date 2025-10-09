@@ -4,8 +4,7 @@ import { useCodeReview } from '@/composables/useCodeReview'
 
 const { isAnalyzing, error, result, analyzeCode } = useCodeReview()
 
-const code = ref(`
-import { ref, computed } from 'vue'
+const code = ref(`import { ref, computed } from 'vue'
 
 export function useCounter() {
   const count = ref(0)
@@ -16,8 +15,7 @@ export function useCounter() {
   }
   
   return { count, doubleCount, increment }
-}
-`)
+}`)
 
 const language = ref('typescript')
 
@@ -33,91 +31,102 @@ const getSeverityColor = (severity: string) => {
   }
   return colors[severity as keyof typeof colors] || colors.medium
 }
+
+const getSeverityLabel = (severity: string) => {
+  return severity.toUpperCase()
+}
 </script>
 
 <template>
   <div class="code-reviewer">
-    <div class="header">
-      <h2>🔍 AI Code Reviewer</h2>
-      <p>Загрузи код для детального анализа от Claude</p>
+    <div class="page-header">
+      <h1 class="page-title">Code Review</h1>
+      <p class="page-description">
+        Get detailed analysis and suggestions for your code
+      </p>
     </div>
 
-    <div class="input-section">
-      <div class="controls">
-        <select v-model="language" class="language-select">
-          <option value="typescript">TypeScript</option>
-          <option value="javascript">JavaScript</option>
-          <option value="vue">Vue SFC</option>
-        </select>
-        
-        <button 
-          @click="handleAnalyze" 
+    <div class="reviewer-layout">
+      <div class="code-input-section">
+        <div class="section-header">
+          <h3 class="section-title">Your Code</h3>
+          <select v-model="language" class="language-select">
+            <option value="typescript">TypeScript</option>
+            <option value="javascript">JavaScript</option>
+          </select>
+        </div>
+
+        <textarea
+          v-model="code"
+          placeholder="Paste your code here..."
+          class="code-textarea"
+          :disabled="isAnalyzing"
+        />
+
+        <button
+          @click="handleAnalyze"
           :disabled="isAnalyzing || !code.trim()"
-          class="analyze-btn"
+          class="analyze-button"
         >
-          {{ isAnalyzing ? 'Анализирую...' : 'Проанализировать' }}
+          {{ isAnalyzing ? 'Analyzing...' : 'Analyze Code' }}
         </button>
       </div>
 
-      <textarea
-        v-model="code"
-        placeholder="Вставь свой код здесь..."
-        class="code-input"
-        :disabled="isAnalyzing"
-      />
-    </div>
-
-    <div v-if="error" class="error-message">
-      ❌ {{ error }}
-    </div>
-
-    <div v-if="result" class="results">
-      <div class="summary-card">
-        <h3>📊 Резюме</h3>
-        <p>{{ result.summary }}</p>
+      <div v-if="error" class="error-banner">
+        <span class="error-icon">⚠️</span>
+        <span>{{ error }}</span>
       </div>
 
-      <div v-if="result.issues.length > 0" class="issues-section">
-        <h3>⚠️ Найденные проблемы ({{ result.issues.length }})</h3>
-        
-        <div 
-          v-for="(issue, index) in result.issues" 
-          :key="index"
-          class="issue-card"
-        >
-          <div class="issue-header">
-            <span 
-              class="severity-badge"
-              :style="{ backgroundColor: getSeverityColor(issue.severity) }"
-            >
-              {{ issue.severity.toUpperCase() }}
-            </span>
-            <span v-if="issue.line" class="line-number">
-              Строка {{ issue.line }}
-            </span>
-          </div>
+      <div v-if="result" class="results-section">
+        <div class="summary-card">
+          <h3 class="card-title">📊 Summary</h3>
+          <p class="summary-text">{{ result.summary }}</p>
+        </div>
+
+        <div v-if="result.issues.length > 0" class="issues-section">
+          <h3 class="section-title">
+            ⚠️ Issues Found ({{ result.issues.length }})
+          </h3>
           
-          <div class="issue-content">
-            <div class="issue-description">
-              <strong>Проблема:</strong>
-              <p>{{ issue.description }}</p>
+          <div 
+            v-for="(issue, index) in result.issues" 
+            :key="index"
+            class="issue-card"
+          >
+            <div class="issue-header">
+              <span 
+                class="severity-badge"
+                :style="{ backgroundColor: getSeverityColor(issue.severity) }"
+              >
+                {{ getSeverityLabel(issue.severity) }}
+              </span>
+              <span v-if="issue.line" class="line-number">
+                Line {{ issue.line }}
+              </span>
             </div>
             
-            <div class="issue-suggestion">
-              <strong>💡 Предложение:</strong>
-              <p>{{ issue.suggestion }}</p>
+            <div class="issue-content">
+              <div class="issue-description">
+                <strong>Problem:</strong>
+                <p>{{ issue.description }}</p>
+              </div>
+              
+              <div class="issue-suggestion">
+                <strong>💡 Suggestion:</strong>
+                <p>{{ issue.suggestion }}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div v-if="result.positives.length > 0" class="positives-section">
-        <h3>✅ Что хорошо</h3>
-        <ul>
-          <li v-for="(positive, index) in result.positives" :key="index">
-            {{ positive }}
-          </li>
-        </ul>
+        <div v-if="result.positives.length > 0" class="positives-section">
+          <h3 class="section-title">✅ What's Good</h3>
+          <ul class="positives-list">
+            <li v-for="(positive, index) in result.positives" :key="index">
+              {{ positive }}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -125,156 +134,213 @@ const getSeverityColor = (severity: string) => {
 
 <style scoped>
 .code-reviewer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
+.page-header {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.header h2 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: #1f2937;
+.page-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--color-heading);
 }
 
-.header p {
-  color: #6b7280;
+.page-description {
+  font-size: 18px;
+  color: var(--color-text-light);
+  margin: 0;
 }
 
-.input-section {
-  margin-bottom: 2rem;
-}
-
-.controls {
+.reviewer-layout {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.code-input-section {
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin: 0;
 }
 
 .language-select {
-  padding: 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  background: white;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: var(--color-text);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
   cursor: pointer;
+  transition: all 0.25s;
 }
 
-.analyze-btn {
-  flex: 1;
-  padding: 0.75rem 1.5rem;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
+.language-select:focus {
+  outline: none;
+  border-color: var(--color-brand);
 }
 
-.analyze-btn:hover:not(:disabled) {
-  background: #2563eb;
+.code-textarea {
+  width: 100%;
+  min-height: 300px;
+  padding: 16px;
+  font-family: var(--font-family-mono);
+  font-size: 14px;
+  line-height: 1.6;
+  background: var(--vt-c-black-soft);
+  color: #e5e7eb;
+  border: 1px solid var(--vt-c-black-mute);
+  border-radius: 6px;
+  resize: vertical;
+  margin-bottom: 16px;
 }
 
-.analyze-btn:disabled {
-  opacity: 0.5;
+.code-textarea:focus {
+  outline: none;
+  border-color: var(--color-brand);
+}
+
+.code-textarea:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-.code-input {
+.code-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.analyze-button {
   width: 100%;
-  min-height: 300px;
-  padding: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  resize: vertical;
+  padding: 12px 24px;
+  background: var(--color-brand);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
 }
 
-.code-input:focus {
-  outline: none;
-  border-color: #3b82f6;
+.analyze-button:hover:not(:disabled) {
+  background: var(--color-brand-dark);
 }
 
-.error-message {
-  padding: 1rem;
-  background: #fee2e2;
+.analyze-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
   color: #991b1b;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
+  font-size: 14px;
 }
 
-.results {
+.error-icon {
+  font-size: 16px;
+}
+
+.results-section {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 24px;
 }
 
 .summary-card {
-  padding: 1.5rem;
+  padding: 24px;
   background: #f0f9ff;
-  border-left: 4px solid #3b82f6;
-  border-radius: 0.5rem;
+  border: 1px solid #bae6fd;
+  border-left: 4px solid var(--vt-c-blue);
+  border-radius: 8px;
 }
 
-.summary-card h3 {
-  margin-bottom: 0.75rem;
-  color: #1e40af;
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: var(--vt-c-blue);
 }
 
-.summary-card p {
-  color: #1f2937;
+.summary-text {
+  margin: 0;
+  color: var(--color-text);
   line-height: 1.6;
 }
 
-.issues-section h3,
-.positives-section h3 {
-  margin-bottom: 1rem;
-  color: #1f2937;
+.issues-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .issue-card {
-  padding: 1.5rem;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
+  padding: 20px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: all 0.25s;
+}
+
+.issue-card:hover {
+  box-shadow: var(--shadow-2);
 }
 
 .issue-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .severity-badge {
-  padding: 0.25rem 0.75rem;
+  padding: 4px 12px;
   color: white;
-  border-radius: 1rem;
-  font-size: 0.75rem;
+  border-radius: 12px;
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .line-number {
-  padding: 0.25rem 0.75rem;
-  background: #f3f4f6;
-  border-radius: 0.25rem;
-  font-size: 0.875rem;
-  color: #6b7280;
-  font-family: monospace;
+  padding: 4px 10px;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: var(--font-family-mono);
+  color: var(--color-text-light);
 }
 
 .issue-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .issue-description,
@@ -285,45 +351,72 @@ const getSeverityColor = (severity: string) => {
 .issue-description strong,
 .issue-suggestion strong {
   display: block;
-  margin-bottom: 0.5rem;
-  color: #374151;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--color-heading);
 }
 
 .issue-description p,
 .issue-suggestion p {
-  color: #6b7280;
   margin: 0;
+  font-size: 14px;
+  color: var(--color-text);
 }
 
 .issue-suggestion {
-  padding: 1rem;
-  background: #f9fafb;
-  border-radius: 0.375rem;
+  padding: 16px;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
 }
 
 .positives-section {
-  padding: 1.5rem;
+  padding: 24px;
   background: #f0fdf4;
-  border-left: 4px solid #10b981;
-  border-radius: 0.5rem;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid var(--color-brand);
+  border-radius: 8px;
 }
 
-.positives-section ul {
+.positives-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 12px 0 0 0;
 }
 
-.positives-section li {
-  padding: 0.5rem 0;
-  color: #1f2937;
+.positives-list li {
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--color-text);
   line-height: 1.6;
+  border-bottom: 1px solid #d1fae5;
 }
 
-.positives-section li::before {
+.positives-list li:last-child {
+  border-bottom: none;
+}
+
+.positives-list li::before {
   content: '✓ ';
-  color: #10b981;
+  color: var(--color-brand);
   font-weight: bold;
-  margin-right: 0.5rem;
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 28px;
+  }
+  
+  .page-description {
+    font-size: 16px;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }
 </style>

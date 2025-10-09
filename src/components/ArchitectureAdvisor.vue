@@ -5,14 +5,15 @@ import { marked } from 'marked'
 
 const { isThinking, advice, error, getAdvice } = useArchitectureAdvice()
 
-const description = ref(`Мне нужно построить SaaS платформу для управления задачами команды с:
-- Kanban доски
-- Gantt диаграммы
-- Time tracking
-- Интеграция с GitHub
-- Real-time collaboration
-- До 1000 одновременных пользователей
-`.trim())
+const description = ref(`Нужно построить real-time чат приложение на Vue 3 с следующими функциями:
+- Отправка текстовых сообщений
+- Отправка файлов и изображений
+- Онлайн статус пользователей
+- Typing indicator
+- История сообщений
+- Push уведомления
+
+Ожидаемая нагрузка: до 1000 одновременных пользователей.`)
 
 const handleAnalyze = () => {
   if (description.value.trim()) {
@@ -33,171 +34,216 @@ const formatAdvice = (content: string): string => {
 
 <template>
   <div class="architecture-advisor">
-    <div class="header">
-      <h2>🏗️ Architecture Advisor</h2>
-      <p>Опиши свой проект и получи архитектурные рекомендации от Claude</p>
+    <div class="page-header">
+      <h1 class="page-title">Architecture Advisor</h1>
+      <p class="page-description">
+        Describe your project and get architectural recommendations from Claude
+      </p>
     </div>
 
-    <div class="input-section">
-      <div class="controls">
-        <button 
-          @click="handleAnalyze" 
-          :disabled="isThinking || !description.trim()"
-          class="analyze-btn"
-        >
-          {{ isThinking ? '🤔 Анализирую...' : '🚀 Получить рекомендации' }}
-        </button>
-        
-        <button 
-          v-if="advice"
-          @click="clearAdvice"
-          class="clear-btn"
-        >
-          Очистить
-        </button>
-      </div>
-
-      <textarea
-        v-model="description"
-        placeholder="Мне нужно построить SaaS платформу для управления задачами команды с:
-- Kanban доски
-- Gantt диаграммы
-- Time tracking
-- Интеграция с GitHub
-- Real-time collaboration
-- До 1000 одновременных пользователей"
-        class="description-input"
-        :disabled="isThinking"
-      />
-    </div>
-
-    <div v-if="error" class="error-message">
-      ❌ {{ error }}
-    </div>
-
-    <div v-if="isThinking && !advice" class="thinking-indicator">
-      <div class="spinner"></div>
-      <p>Claude думает над архитектурой...</p>
-    </div>
-
-    <div v-if="advice" class="advice-section">
-      <div class="advice-header">
-        <h3>💡 Рекомендации</h3>
-        <div v-if="isThinking" class="streaming-indicator">
-          <span class="pulse"></span>
-          Генерирую...
+    <div class="advisor-layout">
+      <div class="input-section">
+        <div class="section-header">
+          <h3 class="section-title">Project Description</h3>
+          <div class="header-actions">
+            <button 
+              v-if="advice"
+              @click="clearAdvice"
+              class="secondary-button"
+            >
+              Clear
+            </button>
+          </div>
         </div>
+
+        <textarea
+          v-model="description"
+          placeholder="Describe your project in detail:
+- What problem does it solve?
+- Main features?
+- Expected load?
+- Special requirements?"
+          class="description-textarea"
+          :disabled="isThinking"
+        />
+
+        <button
+          @click="handleAnalyze"
+          :disabled="isThinking || !description.trim()"
+          class="analyze-button"
+        >
+          {{ isThinking ? '🤔 Thinking...' : '🚀 Get Recommendations' }}
+        </button>
       </div>
-      
-      <div 
-        class="advice-content markdown-body"
-        v-html="formatAdvice(advice)"
-      />
+
+      <div v-if="error" class="error-banner">
+        <span class="error-icon">⚠️</span>
+        <span>{{ error }}</span>
+      </div>
+
+      <div v-if="isThinking && !advice" class="thinking-indicator">
+        <div class="spinner"></div>
+        <p>Claude is analyzing your architecture...</p>
+      </div>
+
+      <div v-if="advice" class="advice-section">
+        <div class="advice-header">
+          <h3 class="advice-title">💡 Recommendations</h3>
+          <div v-if="isThinking" class="streaming-badge">
+            <span class="pulse"></span>
+            Generating...
+          </div>
+        </div>
+        
+        <div 
+          class="advice-content markdown-content"
+          v-html="formatAdvice(advice)"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .architecture-advisor {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  height: 100%;
-  overflow-y: auto;
+  width: 100%;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
+.page-header {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.header h2 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: #1f2937;
+.page-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--color-heading);
 }
 
-.header p {
-  color: #6b7280;
-  font-size: 1rem;
+.page-description {
+  font-size: 18px;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+.advisor-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
 .input-section {
-  margin-bottom: 2rem;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 24px;
 }
 
-.controls {
+.section-header {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
-.analyze-btn {
-  flex: 1;
-  padding: 0.75rem 1.5rem;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
+.section-title {
+  font-size: 18px;
   font-weight: 600;
+  color: var(--color-heading);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.secondary-button {
+  padding: 6px 16px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
   cursor: pointer;
-  transition: background 0.2s;
-  font-size: 1rem;
+  transition: all 0.25s;
 }
 
-.analyze-btn:hover:not(:disabled) {
-  background: #2563eb;
+.secondary-button:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-background);
 }
 
-.analyze-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.clear-btn {
-  padding: 0.75rem 1.5rem;
-  background: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.clear-btn:hover {
-  background: #dc2626;
-}
-
-.description-input {
+.description-textarea {
   width: 100%;
   min-height: 200px;
-  padding: 1rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 0.5rem;
+  padding: 16px;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 15px;
   line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
   resize: vertical;
-  transition: border-color 0.2s;
+  margin-bottom: 16px;
+  transition: all 0.25s;
 }
 
-.description-input:focus {
+.description-textarea:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--color-brand);
 }
 
-.description-input:disabled {
-  background: #f9fafb;
+.description-textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--color-background-soft);
+}
+
+.description-textarea::placeholder {
+  color: var(--color-text-light);
+}
+
+.analyze-button {
+  width: 100%;
+  padding: 12px 24px;
+  background: var(--color-brand);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.analyze-button:hover:not(:disabled) {
+  background: var(--color-brand-dark);
+}
+
+.analyze-button:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-.error-message {
-  padding: 1rem;
-  background: #fee2e2;
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
   color: #991b1b;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
+  font-size: 14px;
+}
+
+.error-icon {
+  font-size: 16px;
 }
 
 .thinking-indicator {
@@ -205,15 +251,18 @@ const formatAdvice = (content: string): string => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem;
-  gap: 1rem;
+  padding: 60px 20px;
+  gap: 20px;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
 }
 
 .spinner {
-  width: 3rem;
-  height: 3rem;
-  border: 4px solid #e5e7eb;
-  border-top-color: #3b82f6;
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--color-background-mute);
+  border-top-color: var(--color-brand);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -223,14 +272,15 @@ const formatAdvice = (content: string): string => {
 }
 
 .thinking-indicator p {
-  color: #6b7280;
-  font-size: 1.125rem;
+  margin: 0;
+  color: var(--color-text-light);
+  font-size: 16px;
 }
 
 .advice-section {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -238,30 +288,35 @@ const formatAdvice = (content: string): string => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 20px 24px;
+  background: var(--color-background-soft);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.advice-header h3 {
+.advice-title {
   margin: 0;
-  color: #1f2937;
-  font-size: 1.25rem;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-heading);
 }
 
-.streaming-indicator {
+.streaming-badge {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #3b82f6;
-  font-size: 0.875rem;
+  gap: 8px;
+  padding: 4px 12px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-brand);
+  font-size: 13px;
   font-weight: 500;
 }
 
 .pulse {
   width: 8px;
   height: 8px;
-  background: #3b82f6;
+  background: var(--color-brand);
   border-radius: 50%;
   animation: pulse 1.5s ease-in-out infinite;
 }
@@ -278,95 +333,155 @@ const formatAdvice = (content: string): string => {
 }
 
 .advice-content {
-  padding: 2rem;
+  padding: 32px 24px;
   line-height: 1.8;
-  color: #1f2937;
+  color: var(--color-text);
 }
 
-/* Markdown стили */
-.markdown-body :deep(h1),
-.markdown-body :deep(h2),
-.markdown-body :deep(h3),
-.markdown-body :deep(h4) {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
+.markdown-content :deep(h1) {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 32px 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-border);
+  color: var(--color-heading);
+}
+
+.markdown-content :deep(h1:first-child) {
+  margin-top: 0;
+}
+
+.markdown-content :deep(h2) {
+  font-size: 24px;
   font-weight: 600;
-  color: #111827;
+  margin: 28px 0 14px 0;
+  color: var(--color-heading);
 }
 
-.markdown-body :deep(h1) {
-  font-size: 1.875rem;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 0.5rem;
+.markdown-content :deep(h3) {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 24px 0 12px 0;
+  color: var(--color-heading);
 }
 
-.markdown-body :deep(h2) {
-  font-size: 1.5rem;
+.markdown-content :deep(p) {
+  margin: 0 0 16px 0;
+  font-size: 15px;
 }
 
-.markdown-body :deep(h3) {
-  font-size: 1.25rem;
+.markdown-content :deep(ul),
+.markdown-content :deep(ol) {
+  margin: 16px 0;
+  padding-left: 28px;
 }
 
-.markdown-body :deep(p) {
-  margin-bottom: 1rem;
+.markdown-content :deep(li) {
+  margin: 8px 0;
+  font-size: 15px;
 }
 
-.markdown-body :deep(ul),
-.markdown-body :deep(ol) {
-  margin-bottom: 1rem;
-  padding-left: 2rem;
+.markdown-content :deep(code) {
+  padding: 2px 6px;
+  background: var(--color-background-mute);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: var(--font-family-mono);
+  color: var(--color-brand-dark);
 }
 
-.markdown-body :deep(li) {
-  margin-bottom: 0.5rem;
-}
-
-.markdown-body :deep(code) {
-  background: #f3f4f6;
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
-  font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 0.875rem;
-  color: #ef4444;
-}
-
-.markdown-body :deep(pre) {
-  background: #1f2937;
-  color: #f3f4f6;
-  padding: 1rem;
-  border-radius: 0.5rem;
+.markdown-content :deep(pre) {
+  background: var(--vt-c-black-soft);
+  color: #e5e7eb;
+  padding: 20px;
+  border-radius: 6px;
   overflow-x: auto;
-  margin-bottom: 1rem;
+  margin: 20px 0;
 }
 
-.markdown-body :deep(pre code) {
+.markdown-content :deep(pre code) {
   background: none;
-  color: inherit;
-  padding: 0;
-  font-size: 0.875rem;
-}
-
-.markdown-body :deep(blockquote) {
-  border-left: 4px solid #3b82f6;
-  padding-left: 1rem;
-  margin: 1rem 0;
-  color: #6b7280;
-  font-style: italic;
-}
-
-.markdown-body :deep(strong) {
-  font-weight: 600;
-  color: #111827;
-}
-
-.markdown-body :deep(em) {
-  font-style: italic;
-}
-
-.markdown-body :deep(hr) {
   border: none;
-  border-top: 1px solid #e5e7eb;
-  margin: 2rem 0;
+  padding: 0;
+  color: inherit;
+  font-size: 14px;
+}
+
+.markdown-content :deep(blockquote) {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: var(--color-background-soft);
+  border-left: 4px solid var(--color-brand);
+  border-radius: 6px;
+  color: var(--color-text-light);
+  font-style: italic;
+}
+
+.markdown-content :deep(strong) {
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.markdown-content :deep(em) {
+  font-style: italic;
+}
+
+.markdown-content :deep(hr) {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 32px 0;
+}
+
+.markdown-content :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14px;
+}
+
+.markdown-content :deep(th) {
+  padding: 12px;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  font-weight: 600;
+  text-align: left;
+  color: var(--color-heading);
+}
+
+.markdown-content :deep(td) {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.markdown-content :deep(tr:hover) {
+  background: var(--color-background-soft);
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 28px;
+  }
+  
+  .page-description {
+    font-size: 16px;
+  }
+  
+  .advice-content {
+    padding: 24px 16px;
+  }
+  
+  .markdown-content :deep(h1) {
+    font-size: 24px;
+  }
+  
+  .markdown-content :deep(h2) {
+    font-size: 20px;
+  }
+  
+  .markdown-content :deep(h3) {
+    font-size: 18px;
+  }
 }
 </style>
+          

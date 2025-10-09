@@ -1,0 +1,83 @@
+/* src/styles/main.css */
+
+:root {
+    /* Colors - Vue style */
+    --vt-c-white: #ffffff;
+    --vt-c-white-soft: #f9f9f9;
+    --vt-c-white-mute: #f1f1f1;
+    
+    --vt-c-black: #1a1a1a;
+    --vt-c-black-soft: #242424;
+    --vt-c-black-mute: #2f2f2f;
+    
+    --vt-c-gray: #8e8e8e;
+    --vt-c-gray-light-1: #aeaeae;
+    --vt-c-gray-light-2: #c5c5c5;
+    --vt-c-gray-light-3: #d4d4d4;
+    --vt-c-gray-dark-1: #636363;
+    
+    --vt-c-green: #42b883;
+    --vt-c-green-light: #42d392;
+    --vt-c-green-lighter: #35eb9a;
+    --vt-c-green-dark: #33a06f;
+    
+    --vt-c-blue: #3b8ced;
+    --vt-c-blue-light: #549ced;
+    
+    /* Semantic colors */
+    --color-background: var(--vt-c-white);
+    --color-background-soft: var(--vt-c-white-soft);
+    --color-background-mute: var(--vt-c-white-mute);
+    
+    --color-border: var(--vt-c-gray-light-3);
+    --color-border-hover: var(--vt-c-gray-light-2);
+    
+    --color-heading: var(--vt-c-black);
+    --color-text: var(--vt-c-black-soft);
+    --color-text-light: var(--vt-c-gray-dark-1);
+    
+    --color-brand: var(--vt-c-green);
+    --color-brand-light: var(--vt-c-green-light);
+    --color-brand-dark: var(--vt-c-green-dark);
+    
+    /* Typography */
+    --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 
+      Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    --font-family-mono: 'Roboto Mono', Monaco, courier, monospace;
+    
+    /* Spacing */
+    --section-gap: 160px;
+    --header-height: 55px;
+    
+    /* Shadows */
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-2: 0 3px 12px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.07);
+    --shadow-3: 0 12px 32px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: var(--font-family-base);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-background);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  code {
+    font-family: var(--font-family-mono);
+    font-size: 14px;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-heading);
+    font-weight: 600;
+    line-height: 1.25;
+  }
