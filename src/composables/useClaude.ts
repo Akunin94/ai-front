@@ -29,7 +29,6 @@ export function useClaude() {
     error.value = null
     isLoading.value = true
 
-    // Добавляем сообщение пользователя
     addMessage('user', content)
 
     try {
@@ -38,7 +37,6 @@ export function useClaude() {
         options
       )
 
-      // Добавляем ответ Claude
       const assistantMessage = response.content
         .filter(block => block.type === 'text')
         .map(block => block.text)
@@ -69,10 +67,8 @@ export function useClaude() {
     error.value = null
     isLoading.value = true
 
-    // Добавляем сообщение пользователя
     addMessage('user', content)
 
-    // Создаем пустое сообщение для стриминга
     const assistantMessageId = crypto.randomUUID()
     messages.value.push({
       id: assistantMessageId,
@@ -85,18 +81,17 @@ export function useClaude() {
       const stream = claudeService.streamMessage(messages.value.slice(0, -1), options)
       
       for await (const chunk of stream) {
-        // Обновляем последнее сообщение
         const lastMessage = messages.value[messages.value.length - 1]
-        lastMessage.content += chunk
+        if (lastMessage) {
+          lastMessage.content += chunk
+        }
         
-        // Колбэк для реалтайм обработки
         options?.onChunk?.(chunk)
       }
 
-      return messages.value[messages.value.length - 1].content
+      return messages.value[messages.value.length - 1]?.content || ''
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Unknown error'
-      // Удаляем незавершенное сообщение
       messages.value.pop()
       console.error('Error streaming message:', e)
       throw e
@@ -110,7 +105,7 @@ export function useClaude() {
   }
 
   const lastMessage = computed(() => 
-    messages.value[messages.value.length - 1]
+    messages.value.length > 0 ? messages.value[messages.value.length - 1] : null
   )
 
   const conversationLength = computed(() => 
