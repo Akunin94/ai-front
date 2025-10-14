@@ -5,15 +5,16 @@ import { marked } from 'marked'
 
 const { isThinking, advice, error, getAdvice } = useArchitectureAdvice()
 
-const description = ref(`Нужно построить real-time чат приложение на Vue 3 с следующими функциями:
-- Отправка текстовых сообщений
-- Отправка файлов и изображений
-- Онлайн статус пользователей
-- Typing indicator
-- История сообщений
-- Push уведомления
+const description = ref(`Need to build a real-time chat application on Vue 3 with the following features:
 
-Ожидаемая нагрузка: до 1000 одновременных пользователей.`)
+- Sending text messages
+- Sending files and images
+- User online status
+- Typing indicator
+- Message history
+- Push notifications
+
+Expected load: up to 1000 concurrent users.`)
 
 const handleAnalyze = () => {
   if (description.value.trim()) {

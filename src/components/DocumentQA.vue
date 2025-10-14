@@ -145,7 +145,7 @@ const handleClearAll = async () => {
             @dragover="handleDragOver"
           >
             <p class="drop-zone-text">or drop file here</p>
-            <p class="drop-zone-formats">PDF, DOCX, TXT, MD</p>
+            <p class="drop-zone-formats">DOCX, TXT, MD</p>
           </div>
 
           <div v-if="isUploading" class="upload-progress">
@@ -552,9 +552,18 @@ const handleClearAll = async () => {
   gap: 8px;
   padding: 12px 20px;
   background: #fef2f2;
-  border-bottom: 1px solid #fecaca;
+  border: 1px solid #fecaca;
   color: #991b1b;
   font-size: 14px;
+}
+
+/* Dark theme override для error */
+@media (prefers-color-scheme: dark) {
+  .error-banner {
+    background: #7f1d1d;
+    border-color: #991b1b;
+    color: #fecaca;
+  }
 }
 
 .error-icon {

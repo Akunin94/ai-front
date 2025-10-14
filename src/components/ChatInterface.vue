@@ -13,7 +13,7 @@ const {
 
 const inputMessage = ref('')
 const chatContainer = ref<HTMLElement>()
-const systemPrompt = ref('Ты опытный разработчик, специализирующийся на Vue.js, TypeScript и современном веб-разработке.')
+const systemPrompt = ref('You are an experienced developer specializing in Vue.js, TypeScript, and modern web development.')
 const temperature = ref(0.7)
 
 const scrollToBottom = async () => {
