@@ -10,7 +10,8 @@ const navItems = [
   { name: 'chat', label: 'Chat', icon: '💬' },
   { name: 'code-review', label: 'Code Review', icon: '🔍' },
   { name: 'architecture', label: 'Architecture', icon: '🏗️' },
-  { name: 'documents', label: 'Documents', icon: '📚' }
+  { name: 'documents', label: 'Documents', icon: '📚' },
+  { name: 'project', label: 'Project', icon: '📦' }
 ]
 </script>
 

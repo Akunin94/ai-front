@@ -206,12 +206,13 @@ const getSeverityLabel = (severity: string) => {
   font-family: var(--font-family-mono);
   font-size: 14px;
   line-height: 1.6;
-  background: var(--vt-c-black-soft);
-  color: #e5e7eb;
-  border: 1px solid var(--vt-c-black-mute);
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   resize: vertical;
   margin-bottom: 16px;
+  transition: all 0.25s;
 }
 
 .code-textarea:focus {
@@ -225,7 +226,7 @@ const getSeverityLabel = (severity: string) => {
 }
 
 .code-textarea::placeholder {
-  color: #9ca3af;
+  color: var(--color-text-light);
 }
 
 .analyze-button {
@@ -262,6 +263,14 @@ const getSeverityLabel = (severity: string) => {
   font-size: 14px;
 }
 
+@media (prefers-color-scheme: dark) {
+  .error-banner {
+    background: #7f1d1d;
+    border-color: #991b1b;
+    color: #fecaca;
+  }
+}
+
 .error-icon {
   font-size: 16px;
 }
@@ -274,9 +283,9 @@ const getSeverityLabel = (severity: string) => {
 
 .summary-card {
   padding: 24px;
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
-  border-left: 4px solid var(--vt-c-blue);
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-brand);
   border-radius: 8px;
 }
 
@@ -284,7 +293,7 @@ const getSeverityLabel = (severity: string) => {
   font-size: 18px;
   font-weight: 600;
   margin: 0 0 12px 0;
-  color: var(--vt-c-blue);
+  color: var(--color-heading);
 }
 
 .summary-text {
@@ -301,7 +310,7 @@ const getSeverityLabel = (severity: string) => {
 
 .issue-card {
   padding: 20px;
-  background: var(--color-background);
+  background: var(--color-background-soft);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   transition: all 0.25s;
@@ -329,7 +338,7 @@ const getSeverityLabel = (severity: string) => {
 
 .line-number {
   padding: 4px 10px;
-  background: var(--color-background-soft);
+  background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: 4px;
   font-size: 12px;
@@ -365,15 +374,15 @@ const getSeverityLabel = (severity: string) => {
 
 .issue-suggestion {
   padding: 16px;
-  background: var(--color-background-soft);
+  background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: 6px;
 }
 
 .positives-section {
   padding: 24px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
   border-left: 4px solid var(--color-brand);
   border-radius: 8px;
 }
@@ -389,7 +398,7 @@ const getSeverityLabel = (severity: string) => {
   font-size: 14px;
   color: var(--color-text);
   line-height: 1.6;
-  border-bottom: 1px solid #d1fae5;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .positives-list li:last-child {
