@@ -66,13 +66,15 @@ const handleSubmit = async () => {
         content: msg.content
       }))
     
-    await streamMessage(messagesForAPI, {
+    await streamMessage((messagesForAPI as any), {
       onChunk: (chunk: string) => {
         fullResponse += chunk
         const currentSession = getCurrentSession()
         if (currentSession && currentSession.messages.length > 0) {
           const lastMessage = currentSession.messages[currentSession.messages.length - 1]
-          lastMessage.content = fullResponse
+          if (lastMessage) {
+            lastMessage.content = fullResponse
+          }
         }
         scrollToBottom()
       }
@@ -83,7 +85,7 @@ const handleSubmit = async () => {
     const session = getCurrentSession()
     if (session && session.messages.length > 0) {
       const lastMessage = session.messages[session.messages.length - 1]
-      if (lastMessage.role === 'assistant' && !lastMessage.content) {
+      if (lastMessage && lastMessage.role === 'assistant' && !lastMessage.content) {
         session.messages.pop()
       }
     }
