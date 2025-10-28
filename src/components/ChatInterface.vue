@@ -125,7 +125,7 @@ const formatDate = (date: Date) => {
 onMounted(() => {
   if (sessions.value.length === 0) {
     createSession()
-  } else if (!currentSessionId.value && sessions.value.length > 0) {
+  } else if (!currentSessionId.value && sessions.value.length > 0 && sessions.value[0]) {
     switchSession(sessions.value[0].id)
   }
 })
