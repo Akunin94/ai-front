@@ -79,19 +79,23 @@ const handleChatSubmit = async () => {
 
     let fullResponse = ''
     
-    await streamMessage(apiMessages, {
+    await streamMessage((apiMessages as any), {
       systemPrompt: projectContext,
       onChunk: (chunk: string) => {
         fullResponse += chunk
         const lastMessage = messages.value[messages.value.length - 1]
-        lastMessage.content = fullResponse
+        if (lastMessage) {
+          lastMessage.content = fullResponse
+        }
         scrollToBottom()
       }
     })
   } catch (err) {
     console.error('Chat error:', err)
     // Удаляем пустое сообщение при ошибке
-    if (messages.value[messages.value.length - 1].content === '') {
+    const messagesLength = messages.value[messages.value.length - 1];
+
+    if (messagesLength && messagesLength.content === '') {
       messages.value.pop()
     }
   }
@@ -105,7 +109,7 @@ const handleDrop = async (event: DragEvent) => {
 
   for (const item of event.dataTransfer.items) {
     if (item.kind === 'file') {
-      const entry = await item.getAsFileSystemHandle()
+      const entry = await (item as any).getAsFileSystemHandle()
       if (entry && entry.kind === 'directory') {
         await processDirectory(entry as FileSystemDirectoryHandle)
         return

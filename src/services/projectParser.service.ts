@@ -76,7 +76,7 @@ export class ProjectParserService {
       children: []
     }
 
-    for await (const entry of dirHandle.values()) {
+    for await (const entry of (dirHandle as any).values()) {
       // Игнорируем
       if (IGNORED_DIRS.includes(entry.name) || IGNORED_FILES.includes(entry.name)) {
         continue
@@ -117,7 +117,7 @@ export class ProjectParserService {
     parentPath: string,
     files: ProjectFile[]
   ): Promise<void> {
-    for await (const entry of dirHandle.values()) {
+    for await (const entry of (dirHandle as any).values()) {
       // Проверка лимитов
       if (this.fileCount >= MAX_FILES) {
         throw new Error(`Maximum file limit reached (${MAX_FILES} files)`)

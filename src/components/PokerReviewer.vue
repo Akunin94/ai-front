@@ -126,14 +126,14 @@ const handleAnalyze = async () => {
         {
           role: 'user',
           content: messageContent
-        }
+        } as any
       ])
 
       reviewResult.value = response
     } else {
       // Только текст (если вручную описывают раздачу)
       const response = await sendMessage([
-        { role: 'user', content: code.value }
+        { role: 'user', content: code.value } as any
       ])
 
       reviewResult.value = response
