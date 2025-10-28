@@ -9,6 +9,7 @@ const isActive = (name: string) => route.name === name
 const navItems = [
   { name: 'chat', label: 'Chat', icon: '💬' },
   { name: 'code-review', label: 'Code Review', icon: '🔍' },
+  { name: 'poker-review', label: 'Poker Review', icon: '🎰' },
   { name: 'architecture', label: 'Architecture', icon: '🏗️' },
   { name: 'documents', label: 'Documents', icon: '📚' },
   { name: 'project', label: 'Project', icon: '📦' }

@@ -4,6 +4,7 @@ import CodeReviewer from '@/components/CodeReviewer.vue'
 import ArchitectureAdvisor from '@/components/ArchitectureAdvisor.vue'
 import DocumentQA from '@/components/DocumentQA.vue'
 import ProjectManager from '@/components/ProjectManager.vue'
+import PokerReviewer from '@/components/PokerReviewer.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/project',
       name: 'project',
       component: ProjectManager
+    },
+    {
+      path: '/poker-review',
+      name: 'poker-review',
+      component: PokerReviewer
     }
   ]
 })
