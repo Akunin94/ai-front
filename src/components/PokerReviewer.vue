@@ -77,14 +77,34 @@ const handleImageUpload = async (event: Event) => {
   }
 }
 
+const compressImage = (file: File, maxSize = 1024, quality = 0.7): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      let { width, height } = img
+
+      if (width > maxSize || height > maxSize) {
+        const ratio = Math.min(maxSize / width, maxSize / height)
+        width = Math.round(width * ratio)
+        height = Math.round(height * ratio)
+      }
+
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')!
+      ctx.drawImage(img, 0, 0, width, height)
+
+      resolve(canvas.toDataURL('image/jpeg', quality))
+    }
+    img.onerror = reject
+    img.src = URL.createObjectURL(file)
+  })
+}
+
 const processImage = async (file: File) => {
   imageFile.value = file
-  
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    uploadedImage.value = e.target?.result as string
-  }
-  reader.readAsDataURL(file)
+  uploadedImage.value = await compressImage(file)
 }
 
 const removeImage = () => {
@@ -102,7 +122,7 @@ const handleAnalyze = async () => {
   try {
     if (uploadedImage.value) {
       const base64Image = uploadedImage.value.split(',')[1]
-      const imageMediaType = imageFile.value?.type || 'image/png'
+      const imageMediaType = 'image/jpeg'
 
       const messageContent: any[] = [
         {

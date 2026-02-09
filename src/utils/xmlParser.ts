@@ -2,8 +2,9 @@ import type { CodeReviewResult, CodeIssue } from '@/types/codeReview'
 
 export class XMLParser {
   static parseCodeReview(xmlString: string): CodeReviewResult {
+    const cleanedXml = xmlString.replace(/^```(?:xml)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim()
     const parser = new DOMParser()
-    const xmlDoc = parser.parseFromString(xmlString, 'text/xml')
+    const xmlDoc = parser.parseFromString(cleanedXml, 'text/xml')
 
     // Проверка на ошибки парсинга
     const parserError = xmlDoc.querySelector('parsererror')
