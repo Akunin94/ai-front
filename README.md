@@ -1,48 +1,88 @@
-# test
+# AI Assistant Platform
 
-This template should help get you started developing with Vue 3 in Vite.
+> Full-stack AI development assistant built with Vue 3 and Claude API
 
-## Recommended IDE Setup
+🔗 **Live Demo:** https://ai-front-puce.vercel.app
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+![Demo Screenshot](./screenshots/demo.gif)
 
-## Recommended Browser Setup
+## ✨ Features
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- **Streaming Chat** — Real-time AI responses via SSE
+- **RAG Pipeline** — Document Q&A with semantic search
+- **Code Review** — Structured analysis with severity levels
+- **Project Analysis** — Context-aware codebase understanding
 
-## Type Support for `.vue` Imports in TS
+## 🛠 Tech Stack
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+**Frontend**
+- Vue 3 (Composition API)
+- TypeScript
+- Pinia (State Management)
+- Vite
 
-## Customize configuration
+**Backend**
+- Node.js + Express
+- TypeScript
+- Anthropic SDK (Claude API)
+- LangChain
+- OpenAI Embeddings
+- HNSWlib Vector Store
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+## 🏗 Architecture
+```
+┌─────────┐    SSE     ┌─────────┐   Claude   ┌──────────┐
+│ Vue 3   │ ◄────────► │ Express │ ◄────────► │ Claude   │
+│ Client  │            │ Server  │            │ API      │
+└─────────┘            └─────────┘            └──────────┘
+                            │
+                            ▼
+                       ┌─────────┐
+                       │ HNSW    │
+                       │ Vector  │
+                       │ Store   │
+                       └─────────┘
 ```
 
-### Compile and Hot-Reload for Development
+## 🚀 Key Highlights
 
-```sh
+- **End-to-end TypeScript** for type safety
+- **Streaming architecture** for real-time UX
+- **Multi-model setup** (Claude + OpenAI)
+- **Production deployment** on Railway + Vercel
+
+## 📸 Screenshots
+
+[Add 2-3 screenshots showing different features]
+
+## 🔧 Local Development
+```bash
+# Frontend
+cd frontend
+npm install
+npm run dev
+
+# Backend
+cd backend
+npm install
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## 🌐 Environment Variables
+```env
+# Backend
+ANTHROPIC_API_KEY=your_key
+OPENAI_API_KEY=your_key
+PORT=3000
 
-```sh
-npm run build
+# Frontend
+VITE_API_URL=http://localhost:3000
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## 📝 License
 
-```sh
-npm run lint
-```
+MIT
+
+---
+
+Built with ❤️ for exploring AI capabilities in development tools
