@@ -51,10 +51,6 @@
 - **Multi-model setup** (Claude + OpenAI)
 - **Production deployment** on Railway + Vercel
 
-## 📸 Screenshots
-
-[Add 2-3 screenshots showing different features]
-
 ## 🔧 Local Development
 ```bash
 # Frontend
