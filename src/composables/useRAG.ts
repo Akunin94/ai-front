@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { RAGServiceClient } from '@/services/rag.service'
+import { fetchDocuments, clearDocuments as gqlClearDocuments } from '@/services/graphql.service'
 import type { ChatMessage, UploadedFile, SearchResult } from '@/types/rag'
 
 export function useRAG() {
@@ -101,7 +102,7 @@ export function useRAG() {
 
   const loadDocuments = async () => {
     try {
-      const result = await ragService.getDocuments()
+      const result = await fetchDocuments()
       uploadedFiles.value = result.files
     } catch (e) {
       console.error('Failed to load documents:', e)
@@ -110,7 +111,7 @@ export function useRAG() {
 
   const clearAllDocuments = async () => {
     try {
-      await ragService.clearDocuments()
+      await gqlClearDocuments()
       uploadedFiles.value = []
       messages.value = []
     } catch (e) {
