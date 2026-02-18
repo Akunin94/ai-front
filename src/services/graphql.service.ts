@@ -21,6 +21,20 @@ async function graphqlRequest<T>(query: string, variables?: Record<string, unkno
   return result.data
 }
 
+export async function fetchHealth(): Promise<string> {
+  const data = await graphqlRequest<{
+    health: { status: string }
+  }>(`
+    query {
+      health {
+        status
+      }
+    }
+  `)
+
+  return data.health.status
+}
+
 export async function fetchDocuments() {
   const data = await graphqlRequest<{
     documents: {

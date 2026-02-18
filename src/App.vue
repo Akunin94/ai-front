@@ -1,8 +1,26 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { fetchHealth } from '@/services/graphql.service'
 
 const router = useRouter()
 const route = useRoute()
+
+const serverStatus = ref<'loading' | 'ok' | 'error'>('loading')
+
+const checkHealth = async () => {
+  try {
+    const status = await fetchHealth()
+    serverStatus.value = status === 'ok' ? 'ok' : 'error'
+  } catch {
+    serverStatus.value = 'error'
+  }
+}
+
+onMounted(() => {
+  checkHealth()
+  setInterval(checkHealth, 30000)
+})
 
 const isActive = (name: string) => route.name === name
 
@@ -23,6 +41,10 @@ const navItems = [
         <div class="nav-bar-title">
           <h1>AI Assistant</h1>
           <span class="nav-bar-subtitle">Powered by Claude</span>
+          <span class="server-status-wrapper" :title="`Server: ${serverStatus}`">
+            <span class="server-status-dot" :class="serverStatus" />
+            <span class="server-status-label">{{ serverStatus === 'ok' ? 'Online' : serverStatus === 'error' ? 'Offline' : '...' }}</span>
+          </span>
         </div>
         
         <nav class="nav-bar-menu">
@@ -79,7 +101,7 @@ const navItems = [
 
 .nav-bar-title {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
 }
 
@@ -92,6 +114,71 @@ const navItems = [
 .nav-bar-subtitle {
   font-size: 13px;
   color: var(--color-text-light);
+}
+
+.server-status-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 12px;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  cursor: default;
+}
+
+.server-status-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9ca3af;
+  flex-shrink: 0;
+}
+
+.server-status-dot.ok {
+  background: #22c55e;
+}
+
+.server-status-dot.ok::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: #22c55e;
+  opacity: 0;
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.server-status-dot.error {
+  background: #ef4444;
+  animation: blink 1s step-end infinite;
+}
+
+.server-status-dot.loading {
+  animation: pulse-status 1.5s infinite;
+}
+
+.server-status-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-light);
+  line-height: 1;
+}
+
+@keyframes ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes pulse-status {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
 
 .nav-bar-menu {
