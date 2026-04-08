@@ -4,7 +4,11 @@
 
 🔗 **Live Demo:** https://ai-front-puce.vercel.app
 
-![Demo Screenshot](./screenshots/demo.gif)
+## Screenshots
+<img width="1419" height="1298" alt="image" src="https://github.com/user-attachments/assets/62a7414f-1577-4d6f-95b5-8ac5c8ab32ed" />
+<img width="1416" height="1266" alt="image" src="https://github.com/user-attachments/assets/41e571cd-964f-4cc0-bd8f-fdc8ec3283cd" />
+<img width="1454" height="967" alt="image" src="https://github.com/user-attachments/assets/0fdb848f-d7c4-4ede-a07c-135a0a74d638" />
+
 
 ## ✨ Features
 
